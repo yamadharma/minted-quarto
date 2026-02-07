@@ -2,7 +2,7 @@
 local include_listings = false
 local options = {}
 local level_option = ""
-local inline_code = true
+local inline_code = false
 
 local function is_boolean(value)
 	return type(value) == "boolean"
@@ -25,7 +25,26 @@ function set_minted_options(minted_options, l_option)
 	end
 
 	-- quarto.log.output("here are the options: " .. minted_options)
+	if quarto.doc.is_format("latex") then
+      quarto.doc.include_text('in-header', [[
+	    \csundef{listoflistings}
+	    ]]);
+	end
 	quarto.doc.use_latex_package("minted", minted_options)
+	if quarto.doc.is_format("latex") then
+      quarto.doc.include_text('in-header', [[
+	    \usemintedstyle{emacs}
+	    \setminted{mathescape=true}
+	    \setminted{autogobble=true}
+	    \setminted{breaklines=true}
+	    \setminted{breakanywhere=true}
+	    \setminted{frame=lines}
+	    % \setminted{bgcolor=lightgray}
+	    %\setminted{linenos=true,
+	    %  numberblanklines=false,
+	    %}  
+	    ]]);
+	end
 end
 
 -- Function to process metadata
